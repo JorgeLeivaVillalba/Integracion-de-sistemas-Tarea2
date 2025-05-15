@@ -2,8 +2,10 @@
 
 ## Instalacion
 
-Corre el script creardb.sql para crear la base de datos.
-Instala las dependencias con `pip install -r requirements.txt`.
+1. Corre el script creardb.py para crear la base de datos.
+2. Instala las dependencias con `pip install -r requirements.txt`.
+3. Instancia de Telco: `python -m telco.main`
+4. Instancia de Banco: `python -m banco.main`
 
 ## Objetivo general
 
