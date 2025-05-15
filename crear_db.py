@@ -5,11 +5,9 @@ import datetime
 conn = sqlite3.connect('banco_telco.db')
 cursor = conn.cursor()
 
-# Crear tablas
-
 # Tabla Clientes
 cursor.execute('''
-CREATE TABLE IF NOT EXISTS Clientes (
+CREATE TABLE IF NOT EXISTS clientes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     nombre TEXT NOT NULL,
     apellido TEXT NOT NULL,
@@ -19,98 +17,92 @@ CREATE TABLE IF NOT EXISTS Clientes (
 
 # Tabla CuentaDebito
 cursor.execute('''
-CREATE TABLE IF NOT EXISTS CuentaDebito (
+CREATE TABLE IF NOT EXISTS cuenta_debito (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cliente_id INTEGER NOT NULL,
     nro_cuenta TEXT NOT NULL,
     saldo REAL NOT NULL,
-    FOREIGN KEY (cliente_id) REFERENCES Clientes(id)
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 )
 ''')
 
 # Tabla FacturaPendientes
 cursor.execute('''
-CREATE TABLE IF NOT EXISTS FacturaPendientes (
+CREATE TABLE IF NOT EXISTS factura_pendientes (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     cliente_id INTEGER NOT NULL,
     nrofactura TEXT NOT NULL,
     saldoPendiente REAL NOT NULL,
-    FOREIGN KEY (cliente_id) REFERENCES Clientes(id)
+    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 )
 ''')
 
 # Tabla PagosServicios
 cursor.execute('''
-CREATE TABLE IF NOT EXISTS PagosServicios (
+CREATE TABLE IF NOT EXISTS pagos_servicios (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     fecha TEXT NOT NULL,
     id_cuenta_debito INTEGER NOT NULL,
     monto REAL NOT NULL,
     nro_factura TEXT NOT NULL,
-    FOREIGN KEY (id_cuenta_debito) REFERENCES CuentaDebito(id)
+    FOREIGN KEY (id_cuenta_debito) REFERENCES cuenta_debito(id)
 )
 ''')
 
-# Insertar datos de prueba
+# Datos de prueba
 
-# Insertar clientes
 clientes = [
-    ("Juan", "Pérez", "1234567"),
-    ("María", "González", "2345678"),
-    ("Carlos", "Rodríguez", "3456789")
+    ("Jorge", "Leiva", "1234567"),
+    ("Esteban", "Quito", "2345678"),
+    ("Juan", "Perez", "3456789")
 ]
+cursor.executemany("INSERT INTO clientes (nombre, apellido, ci) VALUES (?, ?, ?)", clientes)
 
-cursor.executemany("INSERT INTO Clientes (nombre, apellido, ci) VALUES (?, ?, ?)", clientes)
-
-# Insertar cuentas de débito
 cuentas = [
-    (1, "100-1", 5000.0),  # Cuenta para Juan Pérez
-    (2, "100-2", 3000.0),  # Cuenta para María González
-    (3, "100-3", 2000.0)   # Cuenta para Carlos Rodríguez
+    (1, "100-1", 5000.0),  
+    (2, "100-2", 3000.0),  
+    (3, "100-3", 2000.0)   
 ]
+cursor.executemany("INSERT INTO cuenta_debito (cliente_id, nro_cuenta, saldo) VALUES (?, ?, ?)", cuentas)
 
-cursor.executemany("INSERT INTO CuentaDebito (cliente_id, nro_cuenta, saldo) VALUES (?, ?, ?)", cuentas)
-
-# Insertar facturas pendientes
 facturas = [
-    (1, "F-001", 1500.0),  # Factura para Juan Pérez
-    (1, "F-002", 800.0),   # Otra factura para Juan Pérez
-    (2, "F-003", 1200.0),  # Factura para María González
-    (3, "F-004", 500.0)    # Factura para Carlos Rodríguez
+    (1, "F-001", 1500.0),  
+    (1, "F-002", 800.0),   
+    (2, "F-003", 1200.0),  
+    (3, "F-004", 500.0)    
 ]
+cursor.executemany("INSERT INTO factura_pendientes (cliente_id, nrofactura, saldoPendiente) VALUES (?, ?, ?)", facturas)
 
-cursor.executemany("INSERT INTO FacturaPendientes (cliente_id, nrofactura, saldoPendiente) VALUES (?, ?, ?)", facturas)
-
-# Insertar un pago de ejemplo
+# pago de ejemplo
 fecha_actual = datetime.datetime.now().isoformat()
 pagos = [
-    (fecha_actual, 1, 500.0, "F-001")  # Pago parcial de la factura F-001 por Juan Pérez
+    (fecha_actual, 1, 500.0, "F-001")  # Pago de la factura F-001 
 ]
 
-cursor.executemany("INSERT INTO PagosServicios (fecha, id_cuenta_debito, monto, nro_factura) VALUES (?, ?, ?, ?)", pagos)
+cursor.executemany("INSERT INTO pagos_servicios (fecha, id_cuenta_debito, monto, nro_factura) VALUES (?, ?, ?, ?)", pagos)
 
 # Guardar cambios y cerrar conexión
 conn.commit()
-print("Base de datos creada exitosamente con datos de prueba.")
+print("Base de datos creada")
 
 # Verificar datos insertados
 print("\nClientes:")
-cursor.execute("SELECT * FROM Clientes")
+cursor.execute("SELECT * FROM clientes")
 for row in cursor.fetchall():
     print(row)
 
 print("\nCuentas de Débito:")
-cursor.execute("SELECT * FROM CuentaDebito")
+cursor.execute("SELECT * FROM cuenta_debito")
 for row in cursor.fetchall():
     print(row)
 
 print("\nFacturas Pendientes:")
-cursor.execute("SELECT * FROM FacturaPendientes")
+cursor.execute("SELECT * FROM factura_pendientes")
 for row in cursor.fetchall():
     print(row)
 
 print("\nPagos de Servicios:")
-cursor.execute("SELECT * FROM PagosServicios")
+cursor.execute("SELECT * FROM pagos_servicios")
 for row in cursor.fetchall():
     print(row)
 

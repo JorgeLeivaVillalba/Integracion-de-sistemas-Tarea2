@@ -1,5 +1,10 @@
 # TAREA 2: Integración de Servicios mediante API REST
 
+## Instalacion
+
+Corre el script creardb.sql para crear la base de datos.
+Instala las dependencias con `pip install -r requirements.txt`.
+
 ## Objetivo general
 
 Desarrollar dos servicios RESTful utilizando FastAPI, simulando la interacción entre un banco y una empresa de telefonía (Telco) para la gestión de pagos de facturas. Ambas APIs deberán compartir una base de datos SQLite para fines académicos (lo pueden hacer igualmente en 2 base de datos independientes).
