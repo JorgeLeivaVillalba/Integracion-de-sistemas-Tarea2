@@ -7,10 +7,10 @@ from .routes import router
 # Crear las tablas en la base de datos
 Base.metadata.create_all(bind=engine)
 
-# Crear la aplicación FastAPI
+# Instancia FastAPI
 app = FastAPI()
 
-# Incluir las rutas
+# Rutas
 app.include_router(router)
 
 if __name__ == "__main__":
